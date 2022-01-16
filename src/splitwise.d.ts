@@ -1,1 +1,1 @@
-declare module 'splitwise';
+declare module "splitwise";

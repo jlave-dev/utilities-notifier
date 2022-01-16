@@ -1,0 +1,16 @@
+{
+    "plaid": {
+        "institutionAlias": "chase",
+        "accountId": "123abc"
+    },
+    "splitwise": {
+        "consumerKey": "456def",
+        "consumerSecret": "789ghi",
+        "groupId": "12345678"
+    },
+    "utilsRegex": "comed|comcast",
+    "adjustments": [
+        { "name": "Spotify", "amount": 14.16 },
+        { "name": "HBO Max", "amount": 16.34 }
+    ]
+}

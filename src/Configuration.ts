@@ -1,61 +1,59 @@
-import fs from 'fs';
-import validate from 'validate.js';
+import fs from "fs";
+import path from "path";
+import validate from "validate.js";
+import { ConfigurationObject } from "./types";
 
-interface UtilitiesNotifierConfiguration {
-  plaid: {
-    institutionAlias: string;
-    accountId: string;
-  };
-  splitwise: {
-    consumerKey: string;
-    consumerSecret: string;
-    groupId: string;
-    payerId: string;
-    owerId: string;
-  };
-  utilsRegex?: string;
-  adjustments?: {
-    [name: string]: number;
-  }
-}
-
-const args = require('args-parser')(process.argv);
+const argsParser = require("args-parser");
 
 const constraints = {
-  'plaid.institutionAlias': { presence: true },
-  'plaid.accountId': { presence: true },
-  'splitwise.consumerKey': { presence: true },
-  'splitwise.consumerSecret': { presence: true },
-  'splitwise.groupId': { presence: true },
-  'splitwise.payerId': { presence: true },
-  'splitwise.owerId': { presence: true },
+  "plaid.institutionAlias": { presence: true },
+  "plaid.accountId": { presence: true },
+  "splitwise.consumerKey": { presence: true },
+  "splitwise.consumerSecret": { presence: true },
+  "splitwise.groupId": { presence: true },
+  utilsRegex: { presence: true },
 };
 
 export function getConfig() {
+  const args = argsParser(process.argv);
+
   let configContent: string;
-  let config: UtilitiesNotifierConfiguration;
+  let config: ConfigurationObject;
+
+  let configFilePath;
+  if (!args.config) {
+    configFilePath = path.join(process.cwd(), "config.json");
+  } else if (path.isAbsolute(args.config)) {
+    configFilePath = args.config;
+  } else {
+    configFilePath = path.join(process.cwd(), args.config);
+  }
 
   try {
-    configContent = fs.readFileSync(args.config || './config.json', { encoding: 'utf-8' });
+    configContent = fs.readFileSync(configFilePath, {
+      encoding: "utf-8",
+    });
   } catch (error: any) {
-    console.error('Could not read configuration from file:');
+    console.error("Could not read configuration from file:");
     console.error(error.message);
-    process.exit(2);
+    process.exit(1);
   }
 
   try {
     config = JSON.parse(configContent);
   } catch (error: any) {
-    console.error('Could parse configuration file as JSON:');
+    console.error("Could not parse configuration file as JSON:");
     console.error(error.message);
-    process.exit(2);
+    process.exit(1);
   }
 
   try {
-    validate(config, constraints);
+    const validationResult = validate(config, constraints);
+    if (validationResult) throw new Error(JSON.stringify(validationResult));
   } catch (error: any) {
-    console.error('Could not read configuration from file. Exiting.');
-    process.exit(2);
+    console.error("Invalid configuration:");
+    console.error(error.message);
+    process.exit(1);
   }
 
   return config;
