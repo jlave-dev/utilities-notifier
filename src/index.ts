@@ -1,18 +1,16 @@
-const childProcess = require('child_process');
-const Splitwise = require('splitwise');
-const fs = require('fs');
+import childProcess from 'child_process';
+import Splitwise from 'splitwise';
+import fs from 'fs';
+import * as DateStrings from './DateStrings';
+import * as Configuration from './Configuration';
 
-// Set required date variables
-const firstOfMonth = new Date();
-firstOfMonth.setDate(1);
-firstOfMonth.setHours(0, 0, 0, 0);
-const firstOfMonthString = firstOfMonth.toISOString().split('T')[0];
-const lastOfMonth = new Date();
-lastOfMonth.setMonth(firstOfMonth.getMonth() + 1);
-lastOfMonth.setDate(0);
-lastOfMonth.setHours(11, 59, 59, 0);
-const lastOfMonthString = lastOfMonth.toISOString().split('T')[0];
-const fullMonthString = firstOfMonth.toLocaleString('default', { month: 'long' });
+// Get date strings
+const firstOfMonth = DateStrings.getFirstOfMonth();
+const lastOfMonth = DateStrings.getLastOfMonth();
+const fullMonth = DateStrings.getFullMonth();
+
+// Load configuration from file
+const config = Configuration.getConfig();
 
 let adjustments;
 try {
@@ -26,14 +24,14 @@ try {
   console.log('---------------');
 }
 
-console.log(`Getting bank transactions from ${firstOfMonthString} to ${lastOfMonthString}`);
+console.log(`Getting bank transactions from ${firstOfMonth} to ${lastOfMonth}`);
 console.log('---------------');
 
 // process.exit(0);
 
 // Get transactions from bank
 const json = childProcess.execSync(
-  `plaid-cli transactions ${process.env.PLAID_CLI_INST_ALIAS} -f ${firstOfMonthString} -t ${lastOfMonthString}`,
+  `plaid-cli transactions ${process.env.PLAID_CLI_INST_ALIAS} -f ${firstOfMonth} -t ${lastOfMonth}`,
   { encoding: 'utf-8' },
 );
 
@@ -67,7 +65,7 @@ console.log('---------------');
 
 // -------------------------------
 
-// process.exit(0);
+process.exit(0);
 
 console.log('Creating Splitwise expense');
 console.log('---------------');
@@ -81,7 +79,7 @@ sw.createExpense({
   cost: utilitiesTotal,
   details,
   group_id: process.env.SW_GROUP_ID,
-  description: `${fullMonthString} utilities`,
+  description: `${fullMonth} utilities`,
   category_id: 1,
   split_equally: true,
 });
