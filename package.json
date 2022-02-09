@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node src/index.ts --config=./src/config.json",
+    "start": "ts-node src/index.ts",
     "test": "ts-node node_modules/jasmine/bin/jasmine"
   },
   "keywords": [],
