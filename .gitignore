@@ -1,3 +1,5 @@
+config.json
+
 # Logs
 logs
 *.log
@@ -135,7 +137,8 @@ dist
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
+
 
 # Thumbnails
 ._*
