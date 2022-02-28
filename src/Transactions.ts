@@ -8,6 +8,8 @@ function checkForRequiredTransactions(config: ExtendedConfigurationObject) {
   const utilities = config.utilsRegex.split("|");
   if (transactions.length !== utilities.length) {
     console.error("⚠️ Did not fetch all configured utilities");
+  }
+  if (config.failOnMissingTransactions) {
     process.exit(1);
   }
 }

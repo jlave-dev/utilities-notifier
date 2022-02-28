@@ -12,6 +12,7 @@ export interface ConfigurationObject {
   };
   utilsRegex: string;
   adjustments?: [{ name: string; amount: number }];
+  failOnMissingTransactions?: boolean;
 }
 
 export interface ExtendedConfigurationObject extends ConfigurationObject {
