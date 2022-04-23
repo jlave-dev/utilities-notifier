@@ -7,7 +7,9 @@ export function createExpense(
   details: string
 ) {
   console.log(
-    `Creating Splitwise expense \`${config.fullMonth} utilities\` with cost $${cost}`
+    `Creating Splitwise expense \`${
+      config.fullMonth
+    } utilities\` with cost $${cost.toFixed(2)}`
   );
   console.log("---------------");
 
